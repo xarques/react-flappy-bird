@@ -1,6 +1,8 @@
 import { GLView } from 'expo';
 import * as React from 'react';
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import Amplify from 'aws-amplify';
+import { withAuthenticator } from 'aws-amplify-react';
 
 import DisableBodyScrollingView from './components/DisableBodyScrollingView';
 import ExpoButton from './components/ExpoButton';
@@ -9,10 +11,13 @@ import KeyboardControlsView from './components/KeyboardControlsView';
 import logyo from './components/logyo';
 import Game from './src/game';
 
+import config from './src/aws-exports';
+Amplify.configure(config);
+
 logyo('https://twitter.com/baconbrix');
-export default class App extends React.Component {
+class App extends React.Component {
   state = {
-    score: 0,
+    score: 0
   };
   render() {
     const { style, ...props } = this.props;
@@ -64,9 +69,11 @@ const Score = ({ children }) => (
       textAlign: 'center',
       color: 'white',
       fontSize: 48,
-      userSelect: 'none',
+      userSelect: 'none'
     }}
   >
     {children}
   </Text>
 );
+
+export default withAuthenticator(App, { includeGreetings: true });

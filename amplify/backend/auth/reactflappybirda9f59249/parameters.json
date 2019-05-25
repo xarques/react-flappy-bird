@@ -1,0 +1,71 @@
+{
+    "identityPoolName": "reactflappybirda9f59249_identitypool_a9f59249",
+    "allowUnauthenticatedIdentities": false,
+    "lambdaLogPolicy": "reactf_a9f59249_lambda_log_policy",
+    "openIdLambdaRoleName": "reactf_a9f59249_openid_lambda_role",
+    "openIdRolePolicy": "reactf_a9f59249_openid_pass_role_policy",
+    "openIdLambdaIAMPolicy": "reactf_a9f59249_openid_lambda_iam_policy",
+    "openIdLogPolicy": "reactf_a9f59249_openid_lambda_log_policy",
+    "userPoolName": "reactflappybirda9f59249_userpool_a9f59249",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "roleName": "reactfa9f59249_sns-role",
+    "roleExternalId": "reactfa9f59249_role_external_id",
+    "policyName": "reactfa9f59249-sns-policy",
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientName": "reactfa9f59249_app_client",
+    "userpoolClientGenerateSecret": true,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "mfaLambdaRole": "reactfa9f59249_totp_lambda_role",
+    "mfaLambdaLogPolicy": "reactfa9f59249_totp_lambda_log_policy",
+    "mfaPassRolePolicy": "reactfa9f59249_totp_pass_role_policy",
+    "mfaLambdaIAMPolicy": "reactfa9f59249_totp_lambda_iam_policy",
+    "userpoolClientLambdaRole": "reactfa9f59249_userpoolclient_lambda_role",
+    "userpoolClientLogPolicy": "reactfa9f59249_userpoolclient_lambda_log_policy",
+    "userpoolClientLambdaPolicy": "reactfa9f59249_userpoolclient_lambda_iam_policy",
+    "userpoolClientSetAttributes": false,
+    "resourceName": "reactflappybirda9f59249",
+    "authSelections": "identityPoolAndUserPool",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
+    "useDefault": "default",
+    "usernameAttributes": [
+        "email"
+    ]
+}

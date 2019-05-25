@@ -1,1 +1,8 @@
-{}
+{
+	"auth": {
+		"reactflappybirda9f59249": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation"
+		}
+	}
+}
