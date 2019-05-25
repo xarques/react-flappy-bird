@@ -1,0 +1,14 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "react-flappy-bird-dev-20190525111628-authRole",
+            "UnauthRoleArn": "arn:aws:iam::216126292940:role/react-flappy-bird-dev-20190525111628-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::216126292940:role/react-flappy-bird-dev-20190525111628-authRole",
+            "Region": "eu-west-1",
+            "DeploymentBucketName": "react-flappy-bird-dev-20190525111628-deployment",
+            "UnauthRoleName": "react-flappy-bird-dev-20190525111628-unauthRole",
+            "StackName": "react-flappy-bird-dev-20190525111628",
+            "StackId": "arn:aws:cloudformation:eu-west-1:216126292940:stack/react-flappy-bird-dev-20190525111628/c7717dd0-7ecd-11e9-88a3-06e26620325a"
+        }
+    }
+}
