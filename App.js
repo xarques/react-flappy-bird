@@ -1,8 +1,9 @@
 import { GLView } from 'expo';
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import Amplify, { Auth, API, graphqlOperation } from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react';
+import uuid from 'uuid/v4';
 
 import DisableBodyScrollingView from './components/DisableBodyScrollingView';
 import ExpoButton from './components/ExpoButton';
@@ -11,52 +12,118 @@ import KeyboardControlsView from './components/KeyboardControlsView';
 import logyo from './components/logyo';
 import Game from './src/game';
 
-import { listQueries } from './src/graphql/queries';
+import {
+  createScore as createScoreGraphQL,
+  updateScore as updateScoreGraphQL
+} from './src/graphql/mutations';
 
 import config from './src/aws-exports';
+
 Amplify.configure(config);
 
 logyo('https://twitter.com/baconbrix');
-const App = props => {
-  const [score, setScore] = useState(0);
-  let game;
-  const { style, ...rest } = props;
-  return (
-    <View
-      style={[{ width: '100vw', height: '100vh', overflow: 'hidden' }, style]}
-    >
-      <DisableBodyScrollingView>
-        <KeyboardControlsView
-          onKeyDown={({ code }) => {
-            if (game) {
-              if (code === 'Space') {
-                game.onPress();
+class App extends React.Component {
+  state = {
+    id: undefined,
+    userName: undefined,
+    score: 0
+  };
+
+  componentDidMount() {
+    Auth.currentAuthenticatedUser()
+      .then(user => {
+        // console.log('currentAuthenticatedUser', { user });
+        this.initScore(user.attributes.email);
+      })
+      .catch(error => console.log({ error }));
+  }
+
+  initScore = async userName => {
+    try {
+      const id = uuid();
+      this.setState({
+        userName,
+        id,
+        score: 0
+      });
+      const score = {
+        userName,
+        id,
+        score: 0
+      };
+      console.log('initScore', score);
+      const res = await API.graphql(
+        graphqlOperation(createScoreGraphQL, {
+          input: score
+        })
+      );
+    } catch (err) {
+      console.log('error creating score...', err);
+    }
+  };
+
+  updateScore = async score => {
+    try {
+      this.setState(state => ({ ...state, score }));
+      const newScore = { ...this.state, score };
+      console.log('newScore', newScore);
+      await API.graphql(
+        graphqlOperation(updateScoreGraphQL, {
+          input: newScore
+        })
+      );
+    } catch (err) {
+      console.log('error updating score...', err);
+    }
+  };
+
+  render() {
+    const { style, ...props } = this.props;
+    return (
+      <View
+        style={[{ width: '100vw', height: '100vh', overflow: 'hidden' }, style]}
+      >
+        <DisableBodyScrollingView>
+          <KeyboardControlsView
+            onKeyDown={({ code }) => {
+              if (this.game) {
+                if (code === 'Space') {
+                  if (this.game.isDead) {
+                    this.initScore(this.state.userName);
+                  }
+                  this.game.onPress();
+                }
               }
-            }
-          }}
-        >
-          <TouchableWithoutFeedback
-            onPressIn={() => {
-              if (game) game.onPress();
             }}
           >
-            <GLView
-              style={{ flex: 1, backgroundColor: 'black' }}
-              onContextCreate={context => {
-                game = new Game(context);
-                game.onScore = score => setScore(score);
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                if (this.game) {
+                  if (this.game.isDead) {
+                    this.initScore(this.state.userName);
+                  }
+                  this.game.onPress();
+                }
               }}
-            />
-          </TouchableWithoutFeedback>
+            >
+              <GLView
+                style={{ flex: 1, backgroundColor: 'black' }}
+                onContextCreate={context => {
+                  this.game = new Game(context);
+                  this.game.onScore = score => this.updateScore(score);
+                }}
+              />
+            </TouchableWithoutFeedback>
 
-          <Score>{score}</Score>
-        </KeyboardControlsView>
-      </DisableBodyScrollingView>
-      <ExpoButton />
-      <GithubButton />
-    </View>
-  );
-};
+            <Score>{this.state.score}</Score>
+          </KeyboardControlsView>
+        </DisableBodyScrollingView>
+        <ExpoButton />
+        <GithubButton />
+      </View>
+    );
+  }
+}
 
 const Score = ({ children }) => (
   <Text
